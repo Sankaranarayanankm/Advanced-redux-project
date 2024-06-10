@@ -4,6 +4,7 @@ import { cartActions } from "../../Store/cartSlice";
 
 const CartItem = (props) => {
   const { title, quantity, total, price } = props;
+  console.log(quantity)
   const dispatch = useDispatch();
   const incrementCartItemHandler = (id) => {
     dispatch(cartActions.incrementCartItem(id));
