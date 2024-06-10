@@ -2,25 +2,27 @@ import { useEffect, useState } from "react";
 import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Notification from "./components/UI/Notification";
+import { uiAction } from "./Store/uiSlice";
 let initial = true;
 function App() {
   const showCart = useSelector((state) => state.ui.showCart);
   const cart = useSelector((state) => state.cart);
-  const [notification, setNotification] = useState({
-    status: "",
-    title: "",
-    message: "",
-  });
+  const notification = useSelector((state) => state.ui.notification);
+  const dispatch = useDispatch();
+  console.log(notification);
+
   useEffect(() => {
     const storeData = async () => {
-      try {
-        setNotification({
-          status: "loading",
+      dispatch(
+        uiAction.handleNotification({
+          status: "pending",
           title: "Sending...",
           message: "sending data to backend",
-        });
+        })
+      );
+      try {
         const response = await fetch(
           "https://practice-b7928-default-rtdb.firebaseio.com/cart.json",
           {
@@ -35,19 +37,22 @@ function App() {
           const errData = await response.json();
           throw new Error(errData.error.message || "Failed to store data");
         }
-        setNotification({
-          status: "success",
-          title: "Success",
-          message: "Successfully posted your data",
-        });
+        dispatch(
+          uiAction.handleNotification({
+            status: "success",
+            title: "Success!",
+            message: "Successully send data to backend",
+          })
+        );
       } catch (error) {
-        setNotification({
-          status: "error",
-          title: "Error",
-          message: error,
-        });
-        console.log(error);
-      } 
+        dispatch(
+          uiAction.handleNotification({
+            status: "error",
+            title: "Error",
+            message: "Sending data failed",
+          })
+        );
+      }
     };
     if (initial) {
       initial = false;
@@ -57,7 +62,7 @@ function App() {
   }, [cart]);
   return (
     <>
-      {notification.status.length > 0 && <Notification {...notification} />}
+      {notification && <Notification {...notification} />}
       <Layout>
         {showCart && <Cart />}
         <Products />
