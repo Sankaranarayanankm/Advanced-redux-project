@@ -6,21 +6,18 @@ const CartItem = (props) => {
   const { title, quantity, total, price } = props;
   const dispatch = useDispatch();
   const incrementCartItemHandler = (id) => {
-    console.log(id);
     dispatch(cartActions.incrementCartItem(id));
   };
   const decrementCartItemHandler = (id) => {
-    console.log(id);
     dispatch(cartActions.decrementCartItem(id));
   };
   return (
     <li className={classes.item}>
       <header>
         <h3>{title}</h3>
-        {/* <div className={classes.price}>
-          ${total.toFixed(2)}{" "}
+        <div className={classes.price}>
           <span className={classes.itemprice}>(${price.toFixed(2)}/item)</span>
-        </div> */}
+        </div>
       </header>
       <div className={classes.details}>
         <div className={classes.quantity}>
